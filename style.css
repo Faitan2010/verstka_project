@@ -21,6 +21,7 @@ input {
 }
 .text {
     color: red;
+    display: none;
 }
 .header-text {
     color: white;
@@ -73,4 +74,7 @@ input {
     font-weight: 500;
     padding-top: 16px;
     padding-bottom: 16px;
+}
+.active {
+    display: block;
 }
