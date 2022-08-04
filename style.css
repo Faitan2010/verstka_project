@@ -34,16 +34,12 @@ input:focus {
     outline: none;
 }
 .text {
-<<<<<<< HEAD
-    color: red;
     display: none;
-=======
-    margin-top: 16px;
     color: #FF4040;
     padding-left: 26px;
     font-size: 24px;
     line-height: 29px;
->>>>>>> ee72a1fc66f80710d1ce1abf746bbd1419040109
+    position: absolute;
 }
 .header-text {
     color: white;
@@ -87,7 +83,6 @@ input:focus {
     color: white;
     font-size: 20px;
     font-weight: 500;
-<<<<<<< HEAD
     padding-top: 16px;
     padding-bottom: 16px;
 }
