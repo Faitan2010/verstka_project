@@ -18,9 +18,14 @@ setInterval(function () {
 }, 1000)
 
 input.addEventListener('input', function (e) {
-        if (input.value === '') {
-            text.classList.add('active')
-        } else {
-            text.classList.remove('active')
-        }
+    if (input.value.length < 2) {
+        text.classList.add('active');
+        return;
+    }
+    text.classList.remove('active');
 })
+input.addEventListener('blur', ()=> {
+    if (text.classList.contains('active')){
+        text.classList.remove('active')
+    }
+} )
