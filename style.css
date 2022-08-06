@@ -19,6 +19,12 @@ body {
 .input {
     padding-top: 112px;
 }
+.tips {
+    position: absolute;
+    width: 100%;
+    height: 200px;
+    background-color: #fff;
+}
 input {
     height: 80px;
     width: 650px;
@@ -97,7 +103,5 @@ input:focus {
 }
 .active {
     display: block;
-=======
     padding: 16px 26px;
->>>>>>> ee72a1fc66f80710d1ce1abf746bbd1419040109
 }
