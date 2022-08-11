@@ -21,9 +21,11 @@ body {
 }
 .tips {
     position: absolute;
-    width: 100%;
+    width: 600px;
+    margin: 0 auto;
     height: 200px;
     background-color: #fff;
+    z-index: 10;
 }
 input {
     height: 80px;

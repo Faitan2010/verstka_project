@@ -2,7 +2,7 @@ const times = document.querySelector('.five-text');
 const input = document.querySelector('input');
 const text = document.querySelector('.text');
 const weatherText = document.querySelector('.start-text');
-const tips = document.querySelector('.tips')
+const tips = document.querySelector('.tips');
 let date = new Date()
 times.innerHTML = date.toLocaleTimeString('ru', {
     hour: '2-digit',
@@ -32,8 +32,13 @@ input.addEventListener('input', function (e) {
         for(let value of data) {
             const paragraf = document.createElement('p');
             paragraf.innerHTML = value.name;
-
-            tips.appendChild(paragraf)
+            paragraf.classList.add('info')
+            paragraf.addEventListener('click', (r) => {
+                fetch (`https://api.openweathermap.org/data/2.5/weather?lat=${value.lat}&lon=${value.lon}&appid=18c5ded70673077016efa068226c43a4`)
+                .then((resOne)=> resOne.json())
+                .then((dataOne)=> console.log(dataOne))
+            })
+            tips.appendChild(paragraf);
         }
     })
     .catch((err)=>err)
@@ -44,5 +49,3 @@ input.addEventListener('blur', ()=> {
     }
 } )
 console.log(`${input.value}`)
-// document.createElement()
-// Element.uppendChild
