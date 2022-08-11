@@ -26,6 +26,10 @@ body {
     height: 200px;
     background-color: #fff;
     z-index: 10;
+    display: none;
+}
+.active-tips {
+    display: block;
 }
 input {
     height: 80px;
