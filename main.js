@@ -1,8 +1,13 @@
-//TODO: 1 - show/hide content
-//TODO: 2 - save data
-//TODO: 3 - error message if not found result
+//TODO: 1 - show/hide content +
+//TODO: 2 - save data +
+//TODO: 3 - error message if not found result +
 //TODO: 4 - debounce input
 //TODO: 5 - request timeout
+
+//Issues
+//global variables
+//similar code blocks
+//separate api calls
 
 const times = document.querySelector('.five-text');
 const input = document.querySelector('input');
@@ -31,19 +36,19 @@ setInterval(function () {
         second: '2-digit'
     });
 }, 1000)
-if(window.localStorage.getItem('weather') !== null){
+if (window.localStorage.getItem('weather') !== null) {
     const review = window.localStorage.getItem('weather');
-const dataOne = JSON.parse(review);
-tips.classList.remove('active-tips');
-input.value = '';
-weatherText.innerHTML = dataOne.name + ` (${dataOne.sys.country})`;
-temper.innerHTML = `${dataOne.main.temp}°C`;
-temperFeel.innerHTML = dataOne.main.feels_like;
-sky.innerHTML = dataOne.weather[0].description;
-icon.setAttribute('src', `http://openweathermap.org/img/wn/${dataOne.weather[0].icon}@2x.png`);
-windSpeed.innerHTML = dataOne.wind.speed;
-bar.innerHTML = dataOne.main.pressure;
-wrapper.classList.add('wrapper-active');
+    const dataOne = JSON.parse(review);
+    tips.classList.remove('active-tips');
+    input.value = '';
+    weatherText.innerHTML = dataOne.name + ` (${dataOne.sys.country})`;
+    temper.innerHTML = `${dataOne.main.temp}°C`;
+    temperFeel.innerHTML = dataOne.main.feels_like;
+    sky.innerHTML = dataOne.weather[0].description;
+    icon.setAttribute('src', `http://openweathermap.org/img/wn/${dataOne.weather[0].icon}@2x.png`);
+    windSpeed.innerHTML = dataOne.wind.speed;
+    bar.innerHTML = dataOne.main.pressure;
+    wrapper.classList.add('wrapper-active');
 }
 
 input.addEventListener('input', function (e) {
@@ -57,7 +62,7 @@ input.addEventListener('input', function (e) {
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${input.value}&limit=5&appid=18c5ded70673077016efa068226c43a4&units=metric`)
         .then((res) => res.json())
         .then((data) => {
-            if(data.length === 0) {
+            if (data.length === 0) {
                 console.log(data.length);
                 tips.classList.remove('active-tips')
                 text.innerHTML = 'error message if not found result'
