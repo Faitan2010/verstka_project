@@ -28,6 +28,12 @@ body {
     z-index: 10;
     display: none;
 }
+.wrapper {
+    display: none;
+}
+.wrapper-active {
+    display: block;
+}
 .active-tips {
     display: block;
 }
