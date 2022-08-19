@@ -4,6 +4,9 @@
 //TODO: 4 - debounce input
 //TODO: 5 - request timeout
 
+//TODO: enter keypress +
+//TODO: hide tips by input blur +
+
 //Issues
 //global variables
 //similar code blocks
@@ -22,86 +25,109 @@ const wrapper = document.querySelector('.wrapper')
 const windSpeed = document.querySelector('.text-second > span');
 const bar = document.querySelector('.flex-end > span');
 
-let date = new Date()
-times.innerHTML = date.toLocaleTimeString('ru', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-})
+updateTime(times);
 setInterval(function () {
-    let date = new Date()
-    times.innerHTML = date.toLocaleTimeString('ru', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
-}, 1000)
+    updateTime(times);
+}, 1000);
+
 if (window.localStorage.getItem('weather') !== null) {
     const review = window.localStorage.getItem('weather');
-    const dataOne = JSON.parse(review);
-    tips.classList.remove('active-tips');
-    input.value = '';
-    weatherText.innerHTML = dataOne.name + ` (${dataOne.sys.country})`;
-    temper.innerHTML = `${dataOne.main.temp}°C`;
-    temperFeel.innerHTML = dataOne.main.feels_like;
-    sky.innerHTML = dataOne.weather[0].description;
-    icon.setAttribute('src', `http://openweathermap.org/img/wn/${dataOne.weather[0].icon}@2x.png`);
-    windSpeed.innerHTML = dataOne.wind.speed;
-    bar.innerHTML = dataOne.main.pressure;
-    wrapper.classList.add('wrapper-active');
+    setData(JSON.parse(review));
 }
 
-input.addEventListener('input', function (e) {
+input.addEventListener('input', handleSearchInput)
+input.addEventListener('keypress', handleEnterKeypress);
+input.addEventListener('blur', hideError);
+
+function handleSearchInput(e) {
+    const value = e.target.value;
     tips.innerHTML = '';
-    if (input.value.length < 2) {
-        text.classList.add('active');
-        tips.classList.remove('active-tips');
+    if (value.length < 2) {
+        setError(text, 'Enter more then 1 character');
         return;
     }
-    text.classList.remove('active');
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${input.value}&limit=5&appid=18c5ded70673077016efa068226c43a4&units=metric`)
-        .then((res) => res.json())
+    hideTips();
+
+    setTipsList(value, 5);
+}
+
+function setTipsList(inputText, tipsCount = 5) {
+    getData.getTipsList(inputText, tipsCount)
         .then((data) => {
             if (data.length === 0) {
-                console.log(data.length);
-                tips.classList.remove('active-tips')
-                text.innerHTML = 'error message if not found result'
-                text.classList.add('active')
+                setError(text, 'not found result');
                 return;
             }
             for (let value of data) {
-                const paragraf = document.createElement('p');
-                paragraf.innerHTML = value.name;
-                paragraf.classList.add('info')
-                tips.classList.add('active-tips')
-                paragraf.addEventListener('click', (r) => {
-                    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${value.lat}&lon=${value.lon}&appid=18c5ded70673077016efa068226c43a4&units=metric`)
-                        .then((resOne) => resOne.json())
-                        .then((dataOne) => {
-                            console.log(dataOne);
-                            if (dataOne.cod === 200) {
-                                tips.classList.remove('active-tips');
-                                input.value = '';
-                                weatherText.innerHTML = dataOne.name + ` (${dataOne.sys.country})`;
-                                temper.innerHTML = `${dataOne.main.temp}°C`;
-                                temperFeel.innerHTML = dataOne.main.feels_like;
-                                sky.innerHTML = dataOne.weather[0].description;
-                                icon.setAttribute('src', `http://openweathermap.org/img/wn/${dataOne.weather[0].icon}@2x.png`);
-                                windSpeed.innerHTML = dataOne.wind.speed;
-                                bar.innerHTML = dataOne.main.pressure;
-                                wrapper.classList.add('wrapper-active');
-                                window.localStorage.setItem('weather', `${JSON.stringify(dataOne)}`)
-                            }
-                        })
-                })
-                tips.appendChild(paragraf);
+                createTip(value);
             }
         })
         .catch((err) => err)
-})
-input.addEventListener('blur', () => {
-    if (text.classList.contains('active')) {
-        text.classList.remove('active')
+}
+
+function hideTips() {
+    text.classList.remove('active');
+}
+
+function hideError() {
+    text.classList.remove('active');
+}
+
+function createTip(cityData) {
+    const paragraf = document.createElement('p');
+    paragraf.innerHTML = cityData.name;
+    paragraf.classList.add('info')
+    tips.classList.add('active-tips')
+    paragraf.addEventListener('click',
+        () => selectTip(cityData.lat, cityData.lon))
+    tips.appendChild(paragraf);
+}
+
+function selectTip(lat, lon) {
+    getData.getWeatherData(lat, lon)
+        .then((dataOne) => {
+            if (dataOne.cod === 200) {
+                input.value = '';
+                setData(dataOne);
+                window.localStorage.setItem('weather', `${JSON.stringify(dataOne)}`)
+            }
+        })
+}
+
+function handleEnterKeypress(e) {
+    if (e.key === 'Enter') {
+        hideTips();
+        hideError();
     }
-})
-console.log(`${input.value}`)
+}
+
+function setData(data) {
+    tips.classList.remove('active-tips');
+    weatherText.innerHTML = data.name + ` (${data.sys.country})`;
+    temper.innerHTML = `${formattedTemperature(data.main.temp)}°C`;
+    temperFeel.innerHTML = formattedTemperature(data.main.feels_like);
+    sky.innerHTML = data.weather[0].description;
+    icon.setAttribute('src', `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`);
+    windSpeed.innerHTML = data.wind.speed;
+    bar.innerHTML = data.main.pressure;
+    wrapper.classList.add('wrapper-active');
+}
+
+function formattedTemperature(temperatureValue) {
+    return Math.floor(Number(temperatureValue));
+}
+
+function updateTime(clock) {
+    let date = new Date();
+    clock.innerHTML = date.toLocaleTimeString('ru', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    })
+}
+
+function setError(errorElem, errorMessage) {
+    errorElem.innerHTML = errorMessage;
+    errorElem.classList.add('active');
+    tips.classList.remove('active-tips');
+}
