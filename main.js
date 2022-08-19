@@ -131,3 +131,8 @@ function setError(errorElem, errorMessage) {
     errorElem.classList.add('active');
     tips.classList.remove('active-tips');
 }
+setInterval (function f () {
+    const review = window.localStorage.getItem('weather');
+    const reviewParse = JSON.parse(review)
+    selectTip(reviewParse.coord.lat, reviewParse.coord.lon)      
+},10000)
